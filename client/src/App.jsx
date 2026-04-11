@@ -12,8 +12,8 @@ import Cart from "./pages/Cart";
 import AddAddress from "./pages/AddAddress";
 import MyOrders from "./pages/MyOrders";
 import SellerLogin from "./Component/Seller/SellerLogin";
-import { useAppContext } from "./context/AppContext";
-import SellerLayout from "./pages/seller/Sellerlayout";
+import { useAppContext } from "./Context/AppContext"
+import SellerLayout from "./pages/seller/SellerLayout"
 import AddProduct from "./pages/seller/AddProduct";
 import ProductList from "./pages/seller/ProductList";
 import Orders from "./pages/seller/Orders";
@@ -22,6 +22,9 @@ import Orders from "./pages/seller/Orders";
 const App = () => {
   const isSellerPath=useLocation().pathname.includes("seller");
   const {showUserLogin,isSeller}=useAppContext();
+  
+  console.log(isSeller);
+  
 
   return (
     <div className="text-default min-h-screen text-gray-700 bg-white">

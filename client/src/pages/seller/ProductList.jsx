@@ -6,7 +6,7 @@ const ProductList = () => {
 
     const {products,currency,axios,fetchProducts}=useAppContext();
 
-    const toogleStock=async()=>{
+    const toggleStock=async(id,inStock)=>{
         try {
             const  {data}=await axios.post('/api/product/stock',{id,inStock});
             if(data.success){
@@ -15,7 +15,6 @@ const ProductList = () => {
             }
             else{
                 toast.error(data.message)
-                
             }
         } catch (error) {
             toast.error(error.message);    
@@ -48,7 +47,7 @@ const ProductList = () => {
                                     <td className="px-4 py-3 max-sm:hidden">{currency}{product.offerPrice}</td>
                                     <td className="px-4 py-3">
                                         <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
-                                            <input type="checkbox" onClick={()=>toogleStock(product._id,!product.inStock)} checked={product.inStock} className="sr-only peer"  />
+                                            <input type="checkbox" onClick={()=>toggleStock(product._id,!product.inStock)} checked={product.inStock} className="sr-only peer"  />
                                             <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
                                             <span className="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
                                         </label>

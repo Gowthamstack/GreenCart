@@ -5,7 +5,7 @@ const UserSchema =mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    carttems: { type: Object, default: {} },
+    cartItems: { type: Object, default: {} },
   },
   { minimize: false }
 );

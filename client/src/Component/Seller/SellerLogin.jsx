@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useAppContext } from '../../Context/AppContext';
+import { useAppContext } from '../../Context/AppContext'
 import toast from 'react-hot-toast';
 
 const SellerLogin = () => {
@@ -14,10 +14,11 @@ const SellerLogin = () => {
           if(data.success){
             setIsSeller(true);
             navigate('/seller');
+            toast.success(data.message);
           }
           else{
-            toast.error(data.message);
-            console.log("Login Failed",data.message);     
+            toast.error(error.message);
+            console.log("Login Failed",error.message);     
           }
         } catch (error) {
           toast.error(error.message);

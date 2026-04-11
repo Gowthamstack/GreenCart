@@ -2,20 +2,25 @@ import React, { useEffect, useState } from "react";
 import { NavLink,Link } from "react-router-dom";
 import { assets } from "../../src/assets/assets";
 import { AppContext, useAppContext } from "../../src/Context/AppContext";
+import toast from "react-hot-toast";
 
 
 const Navbar = () => {
     const [open, setOpen] = useState(false);
     const ref = React.useRef(null);
-    const {navigate,searchQuery,setSearchQuery,getCartCount}=useAppContext();
-    const {user,setUser}=useAppContext();
-    const {seller,isSeller}=useAppContext();
-    const {showUserLogin,setShowUserLogin}=useAppContext();
+    const {navigate,searchQuery,setSearchQuery,getCartCount,showUserLogin,setShowUserLogin,axios,isSeller,user,setUser}=useAppContext();
 
     const logout=async()=>{
-        setUser(null);
-        navigate('/');
-      }
+        try {
+          const {data}=await axios.get('/api/user/logout');
+        if(data.success){
+          setUser(null);
+          toast.success(data.message);
+        }
+        } catch (error) {
+          toast.error(error.message);
+        }
+    }
    
       useEffect(()=>{
         if(searchQuery.length>0){
@@ -50,13 +55,13 @@ const Navbar = () => {
           <img src={assets.cart_icon} onClick={()=>navigate("/cart")} alt="cart_icon" className="w-6 h-6"/>
                     <button className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full">{getCartCount()}</button>
                 </div>
-          {!user ?(<button to="/login" onClick={()=>setShowUserLogin(true)} className="bg-primary hover:bg-secondary text-white px-8 py-2.5 rounded-full ml-4 transition-all duration-500">
+          {!user ?(<button to="/login" onClick={()=>setShowUserLogin(true)} className="bg-primary cursor-pointer hover:bg-secondary text-white px-8 py-2.5 rounded-full ml-4 transition-all duration-500">
             Login
           </button>):(<div className="relative group cursor-pointer">
             <img src={assets.profile_icon} alt="profile" className="w-10 "/>
-            <ul className=" hidden group-hover:block  absolute top-10 right-0 bg-white shadow border  border-gray-200 py-2.5 w-30 rounded-md text-sm md:z-300">
+            <ul className=" hidden group-hover:block z-100  absolute top-10 right-0 bg-white shadow border  border-gray-200 py-2.5 w-30 rounded-md text-sm md:z-300">
               <li onClick={()=>navigate("/my-orders")} className="p-1.5 pl-3 hover:bg-primary/10  cursor-pointer ">MyOrders</li>
-              <li onClick={logout} className="p-1.5 pl-3 hover:bg-primary/10  cursor-pointer ">Logout</li>
+              <li onClick={()=>{logout}} className="p-1.5 pl-3 hover:bg-primary/10  cursor-pointer ">Logout</li>
             </ul>
             </div>)}
         </div>
@@ -99,7 +104,7 @@ const Navbar = () => {
           <NavLink to="/contact" onClick={() => setOpen(false)}>
             Contact
           </NavLink>
-         {!user ? (<button onClick={()=>{setOpen(false); setShowUserLogin(true)}} className="bg-primary text-white px-8 py-2.5 rounded-full transition-all duration-500">
+         {!user ? (<button onClick={()=>{setOpen(false); setShowUserLogin(true)}} className="bg-primary cursor-pointer text-white px-8 py-2.5 rounded-full transition-all duration-500">
             Login
           </button>):
           (

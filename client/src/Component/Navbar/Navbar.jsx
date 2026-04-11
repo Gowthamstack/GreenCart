@@ -71,13 +71,13 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="flex items-center gap-3 md:hidden">
+        <div className="flex items-center gap-3  md:hidden">
           <img src={assets.menu_icon} alt="Menu" onClick={()=>setOpen(true)}/>
         </div>
 
         {/* Mobile Menu */}
         <div
-          className={`fixed top-0 left-0 w-full h-screen bg-white text-base flex flex-col md:hidden items-center justify-center gap-6 font-medium text-gray-800 transition-all duration-500 ${
+          className={`fixed z-100 top-0 left-0 w-full h-screen bg-white  flex flex-col md:hidden items-center justify-center gap-6 font-medium text-gray-800 transition-all duration-500 ${
             open ? "translate-x-0" : "-translate-x-full"
           }`}
         >

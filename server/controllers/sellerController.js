@@ -1,17 +1,17 @@
 //login /api/seller/login
 
-
-import cookieParser from "cookie-parser";
-import jwt, { decode } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import 'dotenv';
 
 
 export const sellerLogin=async(req,res)=>{
-    const sellerEmail=process.env.SELLER_EMAIL;
-    const sellerPassword=process.env.SELLER_PASSWORD;
-    const{email,password}=req.body;
+   
     try {
-      if( sellerEmail === email && sellerPassword==password){
+       const {email,password}=req.body;
+       console.log(email);
+       console.log(password);
+      if( process.env.SELLER_EMAIL == email && process.env.SELLER_PASSWORD == password){
+
         const Token=jwt.sign({email},process.env.JWT_SECRET, {
       expiresIn: '7d'})
         res.cookie('sellerToken',Token,{
@@ -29,7 +29,7 @@ export const sellerLogin=async(req,res)=>{
       }
     } catch (error) {
       console.log(error.message);
-      res.json({success:true,message:error.message});
+      res.json({success:false,message:"Invalid Credentials"});
     }
 }
 
@@ -43,7 +43,7 @@ export const isSellerAuth=async(req,res)=>{
       return res.json({success:true});
     }catch(error){
       console.log(error.message);
-      res.json({success:true,message:error.message});
+      res.json({success:false,message:error.message});
     }
 }
 
@@ -60,6 +60,6 @@ export const sellerLogout = async (req, res) => {
   } 
   catch (error) {
      console.log(error.message);
-    res.json({success:true,message:error.message});
+    res.json({success:false,message:error.message});
   }
 };

@@ -23,9 +23,11 @@ export const AppContextProvider=({children})=>{
     const [cartItems,setCartItems]=useState({});
     const [searchQuery,setSearchQuery]=useState('');
 
-//fetch seller status
+    console.log(user);
 
-    const fetctSeller=async()=>{
+   //fetch seller status
+
+    const fetchSeller=async()=>{
         try {
             const {data}=await axios.get('/api/seller/is-auth');
             if(data.success){
@@ -40,20 +42,22 @@ export const AppContextProvider=({children})=>{
     }
 
 
-
 //fetch user auth status 
 
     const fetchUser=async()=>{
         try{
-            const {data}=await axios.get('/api/user/is-auth')
+            const {data}=await axios.get('/api/user/is-auth',{withCredentials:true})
             if(data.success){
                 setUser(data.user);
-                setCartItems(data.user.cartItems);   
+                setCartItems(data.user.cartItems) ;
             }
         }catch(error){
-            toast.error(error.message);
+            console.log(error.message);
+            setUser(null);
         }
     }
+
+
 
 //Fetch All Products
     const fetchProducts=async()=>{
@@ -69,6 +73,8 @@ export const AppContextProvider=({children})=>{
             toast.error(error.message);
        }
     }
+
+    
 
 //Add product To Cart
    const addToCart=(itemId)=>{
@@ -129,10 +135,10 @@ const getCartAmount=()=>{
 }
 
     useEffect(()=>{
-        fetchUser()
+        fetchSeller();
+        fetchUser();
         fetchProducts();
-        fetctSeller();
-    },[])
+    },[]);
 
 
     useEffect(()=>{

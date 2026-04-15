@@ -59,14 +59,16 @@ const Navbar = () => {
             Login
           </button>):(<div className="relative group cursor-pointer">
             <img src={assets.profile_icon} alt="profile" className="w-10 "/>
-            <ul className=" hidden group-hover:block z-100  absolute top-10 right-0 bg-white shadow border  border-gray-200 py-2.5 w-30 rounded-md text-sm md:z-300">
+            <ul className=" hidden group-hover:block z-100  absolute top-10 right-0 bg-white shadow border  border-gray-200 py-2.5 w-30 rounded-md text-sm md:z-[999]">
               <li onClick={()=>navigate("/my-orders")} className="p-1.5 pl-3 hover:bg-primary/10  cursor-pointer ">MyOrders</li>
-              <li onClick={()=>{logout}} className="p-1.5 pl-3 hover:bg-primary/10  cursor-pointer ">Logout</li>
+              <li onClick={logout} className="p-1.5 pl-3 hover:bg-primary/10  cursor-pointer ">Logout</li>
             </ul>
             </div>)}
         </div>
 
+        
         <div className="flex items-center gap-3 md:hidden">
+          <img src={assets.cart_icon} onClick={()=>navigate("/cart")} alt="cart_icon" className="w-6 h-6"/>
           <img src={assets.menu_icon} alt="Menu" onClick={()=>setOpen(true)}/>
         </div>
 
@@ -108,7 +110,7 @@ const Navbar = () => {
             Login
           </button>):
           (
-            <button onClick={()=>{logout}} className="bg-primary text-white px-8 py-2.5 rounded-full transition-all duration-500">
+            <button onClick={()=>{setOpen(false);logout}} className="bg-primary text-white px-8 py-2.5 rounded-full transition-all duration-500">
             Logout
           </button>
           ) } 

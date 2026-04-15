@@ -80,8 +80,7 @@ export const login = async (req, res) => {
 
 export const isAuth=async(req,res)=>{
     try{
-      const {userId}=req.body;
-      const user=await User.findById(userId).select('-password')
+      const user=await User.findById(req.userId).select('-password')
       return res.json({success:true,user});
     }catch(error){
       console.log(error.message);
@@ -93,7 +92,7 @@ export const isAuth=async(req,res)=>{
 
 
 //logout user :/api/user/logout
-export const logout = async (req, res,next) => {
+export const logout = async (req, res) => {
   try {
     res.clearCookie('token',{
       httpOnly: true,
@@ -101,11 +100,9 @@ export const logout = async (req, res,next) => {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
   })
     return res.json({success:true,message:"Logged Out"})
-    
   } 
   catch (error) {
      console.log(error.message);
     res.json({success:false,message:error.message});
   }
-  next();
 };

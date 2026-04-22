@@ -156,7 +156,7 @@ const getCartAmount=()=>{
     }
     },[cartItems])
 
-    const value={fetchProducts,axios,getCartAmount,getCartCount,navigate,user,setUser,isSeller,setIsSeller,showUserLogin,setShowUserLogin,products,setProducts,currency,addToCart,updateCartItem,removeFromCart,cartItems,searchQuery,setSearchQuery}
+    const value={fetchProducts,axios,getCartAmount,getCartCount,navigate,user,setUser,isSeller,setIsSeller,showUserLogin,setShowUserLogin,products,setProducts,currency,addToCart,updateCartItem,removeFromCart,cartItems,searchQuery,setSearchQuery,setCartItems}
     return <AppContext.Provider value={value}>
         {children}
     </AppContext.Provider>

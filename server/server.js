@@ -10,8 +10,15 @@ import productRouter from "./routes/ProductRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import addressRouter from "./routes/addressRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import { stripeWebHooks } from "./controllers/orderController.js";
 
 const PORT = 8080;
+
+await connectDB();
+await connectCloudinary();
+
+app.post('/stripe',express.raw({type:'/application/json'}),stripeWebHooks);
+
 const allowedOrgins=['http://localhost:5173']
 
 const app = express();
@@ -20,8 +27,8 @@ app.use(cookieParser());
 
 app.use(cors({origin:allowedOrgins,credentials:true}));
 
-await connectDB();
-await connectCloudinary();
+
+
 
 app.get("/",(req, res) => {
   res.send("API Hello Express");

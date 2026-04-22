@@ -2,6 +2,8 @@
 
 import Orders from "../models/order.js";
 import Product from "../models/Product.js";
+import stripe from "stripe";
+import User from '../models/User.js'
 
 export const placeCOD=async(req,res)=>{
     try{
@@ -32,6 +34,142 @@ export const placeCOD=async(req,res)=>{
        return res.json({success:false,message:error.message});
         
     }
+}
+
+// :api/orders/stripe
+
+export const placeOrderStripe=async(req,res)=>{
+    try {
+        const {userId,items,address}=req.body;
+
+        const {origin}=req.headers;
+
+        if(!address || items.length==0){
+            return res.json({success:false,message:"InValid Data"});
+        }
+
+        let productData=[];
+
+        let amount = await items.reduce(async,(acc,item)=>{
+            const {product}=await Product.findById(item.product);
+
+            productData.push({
+                name:product.name,
+                price:product.offerPrice,
+                quantity:product.quantity
+            })
+
+            return (await acc) + product.offerPrice * item.quantity;
+        },0)
+
+        amount += Math.floor(amount * 0.02);
+
+        const order = await  Orders.create({
+            userId,
+            items,
+            address,
+            amount,
+            paymentType:'Online'
+        })
+
+        //Stripe Intialize
+
+        const StripeInstance = new stripe(process.env.STRIPE_SECRET_KEY)
+
+        // create line items for stripe
+
+        const line_items = productData.map((item)=>{
+            return {
+                price_data:{
+                    currency:'usd',
+                    product_data :{
+                        name:item.name
+                    },
+                    unit_amount :Math.floor(item.price + item.price * 0.02) * 100
+                },
+                quantity:item.quantity,
+            }
+        })
+
+        const session =await StripeInstance.checkout.sessions.create({
+            line_items,
+            mode:"payment",
+            success_url:`${origin}/loader?next=my-orders`,
+            cancel_url:`${origin}/cart`,
+            metadata:{
+                orderId : order._id.toString(),
+                userId,
+            }
+        })
+
+        return res.json({success:true,url:session.url });
+
+    } catch (error) {
+        return res.json({success:false,message:error.message});
+    }
+}
+
+
+//Stripe webHooks to verify payments action :/stripe
+
+export const stripeWebHooks=async(request,response)=>{
+    const StripeInstance =new stripe(process.env.STRIPE_SECRET_KEY);
+
+    const sig = request.headers["stripe-signature"];
+
+    let event;
+    try {
+        event = StripeInstance.webhooks.constructEvent(
+            request.body,
+            sig,
+            process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (error) {
+        response.status(400).send(`WebHook Error: ${error.message}`)
+    }
+
+    switch(event.type){
+        case "payment_intent.succeeded":{
+            const paymentIntent = event.data.object;
+            const paymentIntentId = paymentIntent.id;
+
+            //Getting session metadata
+
+            const session = await StripeInstance.checkout.sessions.list({
+                payment_intent:paymentIntentId,
+            })
+
+            const {orderId,userId}=session.data[0].metadata;
+
+            await Orders.findByIdAndUpdate(orderId,{isPaid:true})
+
+            await User.findByIdAndUpdate(userId,{cartItems:{}})
+
+            break;
+        }
+
+        case "payment_intent.payment_failed":{
+
+            const paymentIntent = event.data.object;
+            const paymentIntentId = paymentIntent.id;
+
+            const session = await StripeInstance.checkout.sessions.list({
+                payment_intent:paymentIntentId
+            })
+
+            const {orderId} =session.data[0].metadata;
+
+            await Orders.findByIdAndDelete(orderId)
+
+            break;
+        }
+            
+        default:
+            console.error(`UnHandles Event Type ${event.type}`);
+            break;
+    }
+
+    response.json({received:true})
+
 }
 
 

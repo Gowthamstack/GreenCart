@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
+import { useAppContext } from '../Context/AppContext'
 
 const InputField=({type,placeholder,name,handleChange,address})=>(
     <input className='w-full px-2 py-2.5 border border-gray-500/30 rounded outline-none text-gray-500 focus:border-primary transition'
@@ -20,6 +21,8 @@ const AddAddress = () => {
         phone:'',
     })
 
+    const {axios,navigate}=useAppContext();
+
     const handleChange=()=>{
         const {name,value}=e.target;
 
@@ -29,9 +32,29 @@ const AddAddress = () => {
         }))
     }
 
-    const onSubmitHandler=(e)=>{
+    const onSubmitHandler=async(e)=>{
         e.preventDefault();
+        try {
+            const {data}=await axios.post('/api/address/add',{address});
+
+            if(data.success){
+                toast.success(data.message);
+                navigate('/cart');
+            }
+            else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
+
+    useEffect(()=>{
+        if(!user){
+            navigate('/cart');
+        }
+    },[])
+
   return (
     <div className='mt-16 pb-16'>
        <p className='text-2xl md:text-3xl text-gray-500'>Add Shipping <span className='font-semibold text-primary'>Add Address</span></p>

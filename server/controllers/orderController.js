@@ -8,7 +8,7 @@ import User from '../models/User.js'
 export const placeCOD=async(req,res)=>{
     try{
         const {userId,items,address}=req.body;
-        if(!address || items.length==0){
+        if(!address || items.length === 0){
             res.json({success:false,message:"INValid Data"})
         }
         let amount=await items.reduce(async(acc,item)=>{
@@ -44,19 +44,20 @@ export const placeOrderStripe=async(req,res)=>{
 
         const {origin}=req.headers;
 
-        if(!address || items.length==0){
+        if(!address || items.length === 0){
             return res.json({success:false,message:"InValid Data"});
         }
 
         let productData=[];
 
-        let amount = await items.reduce(async,(acc,item)=>{
-            const {product}=await Product.findById(item.product);
+        //Calculate amount using teams
+        let amount = await items.reduce(async(acc,item)=>{
+            const product = await Product.findById(item.product);
 
             productData.push({
                 name:product.name,
                 price:product.offerPrice,
-                quantity:product.quantity
+                quantity:item.quantity
             })
 
             return (await acc) + product.offerPrice * item.quantity;

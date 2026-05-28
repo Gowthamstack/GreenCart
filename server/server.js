@@ -12,18 +12,22 @@ import addressRouter from "./routes/addressRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import { stripeWebHooks } from "./controllers/orderController.js";
 
+
 const PORT = 8080;
 
 await connectDB();
 await connectCloudinary();
 
-app.post('/stripe',express.raw({type:'/application/json'}),stripeWebHooks);
+
+
 
 const allowedOrgins=['http://localhost:5173']
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+
+app.post('/stripe',express.raw({type:'/application/json'}),stripeWebHooks);
 
 app.use(cors({origin:allowedOrgins,credentials:true}));
 

@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
 import { useAppContext } from '../Context/AppContext'
+import {toast} from "react-hot-toast";
 
 const InputField=({type,placeholder,name,handleChange,address})=>(
     <input className='w-full px-2 py-2.5 border border-gray-500/30 rounded outline-none text-gray-500 focus:border-primary transition'
-    type={type} placeholder={placeholder} name={name} onChange={handleChange} value={address[name]}/>
+    type={type} placeholder={placeholder} name={name} onChange={handleChange} value={address[name] ?? ''}/>
 )
 
 const AddAddress = () => {
 
     const[address,setAddress]=useState({
-        firstname:'',
-        lastname:'',
+        firstName:'',
+        lastName:'',
         email:'',
         street:'',
         city:'',
@@ -21,9 +22,9 @@ const AddAddress = () => {
         phone:'',
     })
 
-    const {axios,navigate}=useAppContext();
+    const {axios,navigate,user}=useAppContext();
 
-    const handleChange=()=>{
+    const handleChange=(e)=>{
         const {name,value}=e.target;
 
         setAddress((prevAddress)=>({
@@ -35,17 +36,17 @@ const AddAddress = () => {
     const onSubmitHandler=async(e)=>{
         e.preventDefault();
         try {
-            const {data}=await axios.post('/api/address/add',{address});
+            const {data}=await axios.post('/api/address/add',{address,userId: user._id});
 
             if(data.success){
                 toast.success(data.message);
                 navigate('/cart');
             }
             else{
-                toast.error(data.message)
+                toast.error(data.message);
             }
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.message);
         }
     }
 
@@ -53,19 +54,19 @@ const AddAddress = () => {
         if(!user){
             navigate('/cart');
         }
-    },[])
+    },[user,navigate])
 
   return (
     <div className='mt-16 pb-16'>
        <p className='text-2xl md:text-3xl text-gray-500'>Add Shipping <span className='font-semibold text-primary'>Add Address</span></p>
     <div className='flex flex-col-reverse md:flex-row justify-between mt-10'>
         <div className='flex max-w-md '>
-            <form onClick={onSubmitHandler} className='space-y-3 mt-6 text-sm'>
+            <form onSubmit={onSubmitHandler} className='space-y-3 mt-6 text-sm'>
                 <div className='grid grid-cols-2 gap-4'>
                     <InputField handleChange={handleChange} address={address} name="firstName" type="text" placeholder="First Name"/>
-                    <InputField handleChange={handleChange} address={address} name="LasttName" type="text" placeholder="Last Name"/>
+                    <InputField handleChange={handleChange} address={address} name="lastName" type="text" placeholder="Last Name"/>
                 </div>
-                 <InputField handleChange={handleChange} address={address} name="Email" type="Email" placeholder="Email"/>
+                 <InputField handleChange={handleChange} address={address} name="email" type="Email" placeholder="Email"/>
                 <InputField handleChange={handleChange} address={address} name="street" type="text" placeholder="Street"/>  
                 <div className='grid grid-cols-2 gap-4'>
                 <InputField handleChange={handleChange} address={address} name="city" type="text" placeholder="City"/>  
@@ -77,7 +78,7 @@ const AddAddress = () => {
                 </div>
                 <InputField handleChange={handleChange} address={address} name="phone" type="text" placeholder="Phone"/>
 
-                <button className='w-full mt-6 text-white py-3 bg-primary hover:bg-secondary transition cursor-pointer uppercase'>
+                <button type='submit' disabled={!user} className='w-full mt-6 text-white py-3 bg-primary hover:bg-secondary transition cursor-pointer uppercase'>
                     Save Address</button>  
 
             </form>

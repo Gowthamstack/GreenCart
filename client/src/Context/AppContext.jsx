@@ -142,7 +142,7 @@ const getCartAmount=()=>{
     useEffect(()=>{
         const updateCart=async()=>{
             try {
-            const {data}=await axios.put('/api/cart/update',{cartItems});
+            const {data}=await axios.put('/api/cart/update',{userId:user._id,cartItems});
             if(data.success){
                 toast.success(data.message);
             }
@@ -153,7 +153,7 @@ const getCartAmount=()=>{
 
     if(user){
         updateCart();
-    }
+        }
     },[cartItems])
 
     const value={fetchProducts,axios,getCartAmount,getCartCount,navigate,user,setUser,isSeller,setIsSeller,showUserLogin,setShowUserLogin,products,setProducts,currency,addToCart,updateCartItem,removeFromCart,cartItems,searchQuery,setSearchQuery,setCartItems}

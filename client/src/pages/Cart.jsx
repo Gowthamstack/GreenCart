@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { assets, dummyAddress } from '../assets/assets';
 import { useAppContext } from '../Context/AppContext';
+import {toast} from "react-hot-toast"
 
 const Cart = () => {
-    const {products,currency,cartItems,removeFromCart,updateCartItem,getCartCount,getCartAmount,navigate,axios,user,setCartItems}=useAppContext();
+    const {products,currency,cartItems,removeFromCart,updateCartItem,getCartCount,getCartAmount,navigate,axios,setCartItems,user}=useAppContext();
     
     const [cartArray,setCartArray]=useState([]);
     const [addresses,setAddresses]=useState([]);
@@ -16,7 +17,7 @@ const Cart = () => {
     const getCart=()=>{
         let tempArray=[]
         for(const key in cartItems){
-            const product=products.find((item)=>item._id===key);
+            const product=products.find((item)=>item._id === key);
             product.quantity=cartItems[key];
             tempArray.push(product);
         }
@@ -25,11 +26,11 @@ const Cart = () => {
 
     const getUserAddress= async()=>{
         try {
-            const {data}=await axios.get('/api/address/get');
+            const {data}=await axios.get('/api/address/get',{params:{ userId: user._id }});
             if(data.success){
-                setAddresses(data.address);
+                setAddresses(data.addresses);
                 if(data.addresses.length>0){
-                    setAddresses(data.addresses[0]);
+                    setSelectAddress(data.addresses[0]);
                 }
             }
             else{
@@ -84,6 +85,7 @@ const Cart = () => {
     useEffect(()=>{
         if(user){
             getUserAddress();
+            getCart();
         }
     },[user])
 

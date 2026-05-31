@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { assets, dummyOrders } from '../../assets/assets';
 import { useAppContext } from '../../Context/AppContext';
+import {toast} from 'react-hot-toast';
 
 const Orders = () => {
    
@@ -10,6 +11,7 @@ const Orders = () => {
     const fetchOrders=async()=>{
         try {
             const {data}=await axios.get('/api/order/seller');
+            console.log(data);
             if(data.success){
                 setOrders(data.orders);
             }

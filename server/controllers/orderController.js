@@ -9,22 +9,27 @@ export const placeCOD=async(req,res)=>{
     try{
         const {userId,items,address}=req.body;
         if(!address || items.length === 0){
-            res.json({success:false,message:"INValid Data"})
+            res.json({success:false,message:"Invalid Data"})
         }
-        let amount=await items.reduce(async(acc,item)=>{
-            const product=await Product.findById(item.product);
-            return await(acc)+product.offerprice * item.quantity;
-        },0)
-        //Add Charges Tax
+        let amount = 0;
 
-        amount+=Math.floor(amount * 0.02);
+         for (const item of items) {
+        const product = await Product.findById(item.product);
+        if (!product) {
+            return res.json({ success: false, message: `Product not found: ${item.product}` });
+        }
+        amount += (item.offerPrice ?? product.offerPrice) * item.quantity;
+        }
+
+    // Add 2% tax
+    amount = Math.floor(amount * 1.02);
 
         await Orders.create({
             userId,
             items,
-            address,
             amount,
-            paymentType:'COD'
+            address,
+            paymentType:'COD',
         })
 
         return res.json({success:true,message:"Order Placed SuccesFully"});
@@ -178,12 +183,13 @@ export const stripeWebHooks=async(request,response)=>{
 
 export const getUserOrders=async(req,res)=>{
     try {
-        const {userId}=req.body;
+        const userId=req.userId;
         const orders=await Orders.find({
             userId,
             $or : [{paymentType:"COD"},{isPaid:true}]
-        }).populate("items Product address").sort({createdAt:-1})
-        res.json({sucsess:true,orders})
+        }).populate("address").populate("items.product")
+        .sort({createdAt:-1})
+        res.json({success:true,orders})
     } catch (error) {
         return res.json({success:false,message:error.message});
     }
@@ -195,8 +201,9 @@ export const getAllOrders=async(req,res)=>{
      try {
         const orders=await Orders.find({
             $or : [{paymentType:"COD"},{isPaid:true}]
-        }).populate("items Product address").sort({createdAt:-1});
-        res.json({sucsess:true,orders})
+        }).populate("address").populate("items.product")
+        .sort({createdAt:-1})
+        res.json({success:true,orders}) 
     } catch (error) {
         return res.json({success:false,message:error.message});
     }

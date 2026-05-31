@@ -49,7 +49,7 @@ const Cart = () => {
             if(paymentOption === "COD"){
                 const {data}=await axios.post('/api/order/cod',{
                 userId:user._id,
-                items:cartArray.map(item=>({product:product._id,quantity:item.quantity})),
+                items:cartArray.map(item=>({product:item._id,quantity:item.quantity})),
                 address:selectAddress._id})
 
                 if(data.success){
@@ -63,7 +63,7 @@ const Cart = () => {
             }else{
                 const {data}=await axios.post('/api/order/stripe',{
                 userId:user._id,
-                items:cartArray.map(item=>({product:product._id,quantity:item.quantity})),
+                items:cartArray.map(item=>({product:products._id,quantity:item.quantity})),
                 address:selectAddress._id})
 
                 if(data.success){

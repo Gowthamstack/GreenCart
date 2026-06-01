@@ -63,7 +63,7 @@ const Cart = () => {
             }else{
                 const {data}=await axios.post('/api/order/stripe',{
                 userId:user._id,
-                items:cartArray.map(item=>({product:products._id,quantity:item.quantity})),
+                items:cartArray.map(item=>({product:item._id,quantity:item.quantity})),
                 address:selectAddress._id})
 
                 if(data.success){

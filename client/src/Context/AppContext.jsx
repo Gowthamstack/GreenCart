@@ -101,7 +101,7 @@ const removeFromCart=(itemId)=>{
     let cartData=structuredClone(cartItems);
     if(cartData[itemId]){
         cartData[itemId]-=1;
-        if(cartData[itemId]===0){
+        if(cartData[itemId] <= 0){
             delete cartData[itemId];
         }
     }   
@@ -142,17 +142,16 @@ const getCartAmount=()=>{
     useEffect(()=>{
         const updateCart=async()=>{
             try {
-            const {data}=await axios.put('/api/cart/update',{userId:user._id,cartItems});
-            if(data.success){
+            const {data}=await axios.post('/api/cart/update',{userId:user._id,cartItems});
+            if(!data.success){
                 toast.success(data.message);
             }
         } catch (error) {
             toast.error(error.message);
         }
-    }
-
-    if(user){
-        updateCart();
+        }
+        if(user){
+            updateCart()
         }
     },[cartItems])
 

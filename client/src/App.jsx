@@ -33,7 +33,7 @@ const App = () => {
        {showUserLogin?<Login/>:null}
         <Toaster/>
     
-        <div className={`${isSellerPath?"":"px-6 md:px-16 lg:px-24 xl:px-32"}`}>
+      <div className={`relative z-0 ${isSellerPath ? "" : "px-6 md:px-16 lg:px-24 xl:px-32"}`}>
           <Routes>
             <Route path="/" element={<Home/>}></Route>
             <Route path="/products" element={<AllProducts/>}></Route>

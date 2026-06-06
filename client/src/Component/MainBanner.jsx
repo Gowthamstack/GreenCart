@@ -4,7 +4,7 @@ import {Link,NavLink} from 'react-router-dom'
 
 const MainBanner = () => {
   return (
-    <div className='relative z-10'>
+    <div className='relative'>
   <img src={assets.main_banner_bg} alt="banner" className='w-full hidden md:block' />
   <img src={assets.main_banner_bg_sm} alt="banner" className='w-full md:hidden' />
 

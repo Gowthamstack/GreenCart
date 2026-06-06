@@ -21,7 +21,7 @@ await connectCloudinary();
 
 
 
-const allowedOrgins=['http://localhost:5173']
+const allowedOrgins=['http://localhost:5173','https://greencart-eight-steel.vercel.app']
 
 const app = express();
 app.use(express.json());

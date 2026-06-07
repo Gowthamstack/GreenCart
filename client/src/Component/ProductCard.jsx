@@ -6,7 +6,7 @@ const ProductCard = ({product}) => {
   const {currency,addToCart,removeFromCart,navigate,cartItems,axios}=useAppContext();
 
   return product && (
-      <div key={product._id} onClick={()=>{navigate(`/products/${product.category.toLowerCase()}/${product._id}`); scrollTo(0,0)}} className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-56 max-w-56 w-full">
+      <div key={product._id} onClick={()=>{navigate(`/products/${product.category.toLowerCase()}/${product._id}`); scrollTo(0,0)}} className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-40 max-w-56 w-full">
           <div className="group cursor-pointer flex items-center justify-center px-2">
               <img className="group-hover:scale-105 transition max-w-26 md:max-w-36" src={product.image[0]} alt={product.name} />
           </div>
@@ -20,7 +20,7 @@ const ProductCard = ({product}) => {
                   <p>(4)</p>
               </div>
               <div className="flex items-end justify-between mt-3">
-                  <p className="md:text-xl text-primary font-medium">
+                  <p className="md:text-xl text-base text-primary font-medium">
                       {currency}{product.offerPrice} <span className="text-black md:text-sm text-xs line-through">{currency}{product.price}</span>
                   </p>
                   <div onClick={(e)=>{e.stopPropagation();}} className="text-primary">

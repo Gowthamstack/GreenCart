@@ -28,7 +28,7 @@ const ProductCategory = () => {
           ))}
         </div>
       ):(
-        <div className='flex items-center justify-center h-[60vh'>
+        <div className='flex items-center justify-center h-[60vh]'>
           <p className='text-2xl font-medium text-primary'>No Products Found in This Category</p>
         </div>
       )}

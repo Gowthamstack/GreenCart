@@ -82,9 +82,9 @@ const Cart = () => {
 
     useEffect(()=>{
         if(user){
-            getUserAddress();
-            getCart();
+            getUserAddress(); 
         }
+        getCart();
     },[user])
 
     

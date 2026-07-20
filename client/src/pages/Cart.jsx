@@ -85,7 +85,7 @@ const Cart = () => {
             getUserAddress(); 
         }
         getCart();
-    },[user])
+    },[user,cartArray]);
 
     
     return products.length>0 && cartItems ?(
